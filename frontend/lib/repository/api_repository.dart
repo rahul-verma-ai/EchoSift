@@ -11,9 +11,10 @@ class ApiRepository {
   ApiRepository()
       : _dio = Dio(
           BaseOptions(
-            baseUrl: 'https://subelongate-unsolvably-cristie.ngrok-free.dev',
-            connectTimeout: const Duration(seconds: 10),
+            baseUrl: 'https://echosift-production.up.railway.app/',
+            connectTimeout: const Duration(seconds: 15),
             receiveTimeout: const Duration(minutes: 5),
+            followRedirects: true,
           ),
         ) {
     _dio.interceptors.add(
