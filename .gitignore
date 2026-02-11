@@ -1,0 +1,36 @@
+# --- Secrets & Config ---
+.env
+backend/.env
+*.env
+
+# --- Backend / Python ---
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/*.pyd
+.pytest_cache/
+vultr_key.txt
+backend/temp_audio/
+backend/*.wav
+backend/*.mp3
+
+# --- Frontend / Flutter ---
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+frontend/build/
+ios/.generated/
+android/app/src/main/res/mipmap-*/
+**/android/**.keystore
+**/android/**.jks
+
+# --- IDE & OS ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
