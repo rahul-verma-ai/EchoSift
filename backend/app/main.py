@@ -94,6 +94,11 @@ async def process_audio(
 
     redis_key = f"session:{session_id}"
 
+    # THE INSURANCE POLICY
+    existing_type = await redis.type(redis_key)
+    if existing_type != "list" and existing_type != "none":
+        await redis.delete(redis_key)
+
     # Rolling window logic using Redis
     async with redis.pipeline(transaction=True) as pipe:
         pipe.rpush(redis_key, transcript)
@@ -112,13 +117,19 @@ async def process_audio(
         "response": ai_response,
     }
 
+# @app.post("/session")
+# async def create_session():
+#     session_id = str(uuid.uuid4())
+#     # Initialize the session key with an expiry
+#     await redis.setex(
+#         f"session:{session_id}", 
+#         settings.redis_session_ttl_seconds, 
+#         "session_start"
+#     )
+#     return {"session_id": session_id}
+
 @app.post("/session")
 async def create_session():
     session_id = str(uuid.uuid4())
-    # Initialize the session key with an expiry
-    await redis.setex(
-        f"session:{session_id}", 
-        settings.redis_session_ttl_seconds, 
-        "session_start"
-    )
+    # Don't set the key here! Let process_audio create the list.
     return {"session_id": session_id}
