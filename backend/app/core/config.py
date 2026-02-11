@@ -1,7 +1,8 @@
-# app/core/config.py
+# backend/app/core/config.py
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 from functools import lru_cache
+from typing import Optional
 
 class Settings(BaseSettings):
     # App
@@ -9,11 +10,12 @@ class Settings(BaseSettings):
     environment: str = "production"
 
     # OpenAI
-    # Use validation_alias to map the uppercase .env key to the lowercase attribute
     openai_api_key: str = Field(..., validation_alias="OPENAI_API_KEY")
 
     # Redis
-    redis_host: str = Field(default="redis")
+    # Priority is given to REDIS_URL if provided by the cloud host
+    redis_url: Optional[str] = Field(default=None, validation_alias="REDIS_URL")
+    redis_host: str = Field(default="localhost")
     redis_port: int = Field(default=6379)
     redis_db: int = Field(default=0)
     redis_session_ttl_seconds: int = Field(default=600)
@@ -27,9 +29,8 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        # This is the "Magic Fix" for the errors you saw:
-        extra="ignore",         # Don't crash if extra variables are in .env
-        case_sensitive=False    # Map OPENAI_API_KEY to openai_api_key automatically
+        extra="ignore",         
+        case_sensitive=False    
     )
 
 @lru_cache
